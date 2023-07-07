@@ -2,7 +2,7 @@
 # entries to be "missing" (or any other meaningful representation) and labelling them -1.
 
 # Input: sequence (list or numpy array), length_sub (int), perc (float between 0 and 1 to represent a percentage of values to be missing in the subsequence)
-# Output: subsequence of sequence of length "len_sub" (list or numpy array, depending on sequence).
+# Output: X,y (dataframes used for training the RNN), subseq_original (numpy array containing the original subsequence, note that its length is 1 longer than y).
 
 def subsequence_pd_with_missing(seq,len_sub,perc):
   seq = np.array(seq)
