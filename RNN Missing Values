@@ -1,0 +1,34 @@
+# The purpose of this python script is to predict missing values from a gene sequence via RNN's
+# What we need:
+#  1.  FASTA files of interest:  For instance, in /project/90daydata/gbru_sugarcane_seq/Zach/Cotton, you'll see a list of files labeled
+#      Cotton1.fa, Cotton2.fa,...,Cotton8.fa.  These are eight (8) different G.Hirsutum genomes pulled from CottonGen.
+#  2.  For training/testing, we can train on Cotton1,2,..7 and test on 8 (or any combination really, as long as we leave one for testing)
+#  3.  The libraries needed for this project are: numpy, pandas, and tensorflow
+#  4.  We can also train on the sugarcane genomes (right now I have the R570 and Colombian which are located in /project/90daydata/gbru_sugarcane_seq/Zach/Sugarcane
+#      and labeled accordinly.  Note that the files that end in "_10" are the isolated assemblies with the first 10 chromosomes and headers.  
+
+# import necessary libraries
+import pandas as pd
+import numpy as np
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, Dense, Masking
+
+# I could leave a note here and say that I can make a loop to iterate over an entire folder of fasta files of interest.
+# PUT THE FUNCTION HERE! #
+
+# Read in the fasta file of interest (using read_fasta_file from the folder "python_functions")
+path_to_fasta_file = '/path/to/fasta_file/here.fasta'
+headers,sequences = read_fasta_file(path_to_fasta_file)
+
+# Map the bases to integers for each sequence in sequences (using change_bases_to_int from the folder "python_functions")
+mapped_sequences = change_bases_to_int(sequences)
+
+# Create and compile the RNN
+model = Sequential()
+model.add(Masking(mask_value =-1, input_shape = (2,1)))
+model.add(LSTM(5))
+model.add(Dense(1))
+model.compile(loss='mean_squared_error', optimizer='adam')
+
+# Train the RNN on random subsequences of the sequence of interest
+
