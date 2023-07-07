@@ -69,7 +69,7 @@ for i in range(n):
 #### Note that len_sub here doesn't have to be the same length as len_sub above, you can fill in missing entries
 #### for a subsequence of any length (assuming its less than the length of the full original sequence).
 #### Ideally, what we do here is take another chromosome_j from a different cotton (or sugarcane) plant to test
-#### Reperform lines 19-30 on a new file to get a new chromosome_j, call it chromosome_j_test
+#### For the test plant of interest, reperform "path_to_fasta_file" to "chromosome_j" to get a new chromosome_j, call it chromosome_j_test
 
 #### Test and check accuracy of predictions.
 ```python
