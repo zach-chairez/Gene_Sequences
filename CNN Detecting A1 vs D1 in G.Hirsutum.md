@@ -151,7 +151,7 @@ model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.004, momentum=0.
 Lastly, we'll orient our training data for the network, then train.
 
 ```python
-xtrain_kmers = [[word[i:i+k] for i in range(len(word)-k+1)] for sentence in corpus_words for word in sentence]
+xtrain_kmers = [[word[i:i+k_mers] for i in range(len(word)-k_mers+1)] for sentence in corpus_words for word in sentence]
 xtrain_numeric = np.array([[word2vec_model.wv[word] for word in kmer_list] for kmer_list in xtrain_kmers])
 xtrain_numeric = xtrain_numeric.reshape(len(corpus_words), -1, 100)
 ytrain = np.concatenate([np.zeros(num_sequences), np.ones(num_sequences)], axis=0)
