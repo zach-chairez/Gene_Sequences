@@ -1,4 +1,6 @@
 - In this file, we'll walk through the steps taken to create the convolutional neural network (CNN) which is used to detect the origin of subreads to either A1 or D1 of G.Hirsutum.
+- $\textbf{Important Note:}$ The current code is written to handle missing entries as indicated by $N$.  Note that we can use the network as described in ```RNN Missing Values.md``` to fill in the missing entries first, then run it through this pipeline.  
+
 
 We'll start by loading all the necessary packages:
 ```python
@@ -58,7 +60,6 @@ def subsequence_all_kmers(base_string, k, n):
     return final_subsequences
 
 ```
-
 Now we'll generate subsequences to create sentences from to build our dictionary of words for our network.
 ```python
 k_mers = 3
