@@ -65,7 +65,7 @@ Now we'll generate subsequences to create sentences from to build our dictionary
 k_mers = 3
 sub_len = 41
 subsequences_a1 = subsequence_all_kmers(a1,k_mers,sub_len);
-subsequences_d1 = subsequence_all_kmers(d1,3,41);
+subsequences_d1 = subsequence_all_kmers(d1,k_mers,sub_len);
 ```
 
 The sequences ```subsequences_a1``` and ```subsequences_d1``` may contain different numbers of sequences.  Also, since we need our training set of subsequences (sentences) to be large, we'll add an additional random set of subsequences of each sequence a1 and d1 until we have a total number of ```num_sequences * 2``` training points.  (```num_sequences``` total for each chromosome).
