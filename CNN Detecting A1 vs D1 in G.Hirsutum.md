@@ -130,7 +130,7 @@ model = Sequential()
 for i in range(3):
     model.add(Conv1D(filters=[32, 32, 16][i], kernel_size=[5, 5, 4][i], strides=1, activation='elu', padding='same',
                      kernel_regularizer=tf.keras.regularizers.l2(0.0001), bias_regularizer=tf.keras.regularizers.l2(0.0001)
-                    ))  # Assuming input sequence length of 100
+                    ))  
     model.add(GroupNormalization(groups=[4, 4, 2][i]))
     model.add(MaxPooling1D(pool_size=[4, 4, 2][i], strides=2))
     model.add(Dropout([0.15, 0.2, 0.25][i]))
