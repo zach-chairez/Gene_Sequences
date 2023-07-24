@@ -1,14 +1,14 @@
 Goal:  To predict missing values from a gene sequence via a RNN.
 What we need:
- 1.  FASTA files of interest:  For instance, in /project/90daydata/gbru_sugarcane_seq/Zach/Cotton, you'll see a list of files labeled
-     Cotton1.fa, Cotton2.fa,...,Cotton8.fa.  These are eight (8) different G.Hirsutum genomes pulled from CottonGen.
+ 1.  FASTA files of interest:  For instance, in ```/project/90daydata/gbru_sugarcane_seq/Zach/Cotton```, you'll see a list of files labeled
+     ```Cotton1.fa, Cotton2.fa,...,Cotton8.fa```.  These are eight (8) different G.Hirsutum genomes pulled from CottonGen.
      
- 2.  For training/testing, we can train on Cotton1,2,..7 and test on 8 (or any combination really, as long as we leave one for testing)
+ 2.  For training/testing, we can train on ```Cotton1,2,..7.fa``` and test on ```Cotton8.fa``` (or any combination really, as long as we leave one for testing)
    
- 3.  The libraries needed for this project are: numpy, pandas, and tensorflow
+ 3.  The libraries needed for this project are: ```numpy, pandas, tensorflow```
    
- 4.  We can also train on the sugarcane genomes (right now I have the R570 and Colombian which are located in /project/90daydata/gbru_sugarcane_seq/Zach/Sugarcane
-     and labeled accordinly.  Note that the files that end in "_10" are the isolated assemblies with the first 10 chromosomes and headers.  
+ 4.  We can also train on the sugarcane genomes (right now I have the R570 and Colombian which are located in ```/project/90daydata/gbru_sugarcane_seq/Zach/Sugarcane```
+     and labeled accordinly.  Note that the files that end in ```"_10"``` are the isolated assemblies with the first 10 chromosomes and headers.  
 
 #### Import necessary libraries
 ```python
@@ -37,9 +37,9 @@ mapped_sequences = change_bases_to_int(sequences)
 ```
 
 #### This next part assume we're training a RNN to learn about a single chromosome.
-#### If we wanted to look at cotton:     A1 -> 0, A2 -> 1, ... , A13 -> 12, D1 -> 13, D2 -> 14, ..., D13 -> 25
-#### If we wanted to look at sugarcane:  C1 -> 0, C2 -> 1, ..., C10 -> 9
-#### The j^th chromosome is the (j-1)^th index in mapped_sequences.
+#### If we wanted to look at cotton:     $A1 \rightarrow 0, A2 \rightarrow 1, ... , A13 \rightarrow 12, D1 \rightarrow 13, D2 \rightarrow 14, ..., D13 \rightarrow 25$
+#### If we wanted to look at sugarcane:  $C1 \rightarrow 0, C2 \rightarrow 1, ..., C10 \rightarrow 9$
+#### The j^th chromosome is the $(j-1)^{th}$ index in ```mapped_sequences```.
 ```python
 chromosome_j = mapped_sequences[j-1]
 ```
@@ -55,9 +55,9 @@ model.compile(loss='mean_squared_error', optimizer='adam')
 
 #### Train the RNN on (n) random subsequences of the sequence of interest with length "len_sub"
 #### You can set... 
-##### verbose = 0 (no output while its running), 
-##### verbose = 1 (shows progress bars)
-##### verbose = 2 (shows when the end of each fit is complete)
+##### ```verbose = 0``` (no output while its running), 
+##### ```verbose = 1``` (shows progress bars and metrics during each batch)
+##### ```verbose = 2``` (shows metrics at the end of each epoch)
 ```python
 n = 100; len_sub = 10000; 
 for i in range(n):
@@ -69,7 +69,7 @@ for i in range(n):
 #### Note that len_sub here doesn't have to be the same length as len_sub above, you can fill in missing entries
 #### for a subsequence of any length (assuming its less than the length of the full original sequence).
 #### Ideally, what we do here is take another chromosome_j from a different cotton (or sugarcane) plant to test
-#### For the test plant of interest, reperform "path_to_fasta_file" to "chromosome_j" to get a new chromosome_j, call it chromosome_j_test
+#### For the test plant of interest, reperform ```path_to_fasta_file``` to ```chromosome_j``` to get a new ```chromosome_j```, call it ```chromosome_j_test```
 
 #### Test and check accuracy of predictions.
 ```python
@@ -98,5 +98,5 @@ miss = np.where(y_test_original == -1)[0]; len_miss = len(miss)
 hit_or_miss = abs(np.round(y_predicted[miss])) == subseq_original[miss+1]
 accuracy = sum(sum(hit_or_miss))/len_miss*100
 ```
-The testing accuracy has been steadily in the upper 90's (usually 98 - 100%).  
+The testing accuracy has been steadily in the upper 90's (usually 98 - 100%).  We've done different combinations of training/testing files and the results are similar.   
 
