@@ -197,4 +197,4 @@ Test (Evaluate) the model:
 model.evaluate(xtest_numeric,ytest)
 ```
 
-As stated earlier, when the number of epochs is large (above 200), the testing accuracy averages at $84$%.  Based off previous tests, if the number of epochs increases (ideally to 500 or even 1000), then the testing accuracy would get over $90$%.  
+As stated earlier, when ```num_epochs``` is large (above 200), the testing accuracy averages at $84$%.  From previous results, accuracy increases as ```num_epochs``` increases.  
