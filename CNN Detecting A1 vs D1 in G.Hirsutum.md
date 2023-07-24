@@ -110,8 +110,8 @@ for i in range(0,len(d1_temp)):
 corpus_words = []
 for i in range(0,len(corpus_sentences)):
   corpus_words_temp = []
-  for j in range(0,sub_len-k+1):
-    corpus_words_temp.append(corpus_sentences[i][j:j+k])
+  for j in range(0,sub_len-k_mers+1):
+    corpus_words_temp.append(corpus_sentences[i][j:j+k_mers])
   corpus_words.append(corpus_words_temp)
 ```
 
@@ -148,9 +148,14 @@ model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.004, momentum=0.
               loss='binary_crossentropy', metrics=['accuracy'])
 ```
 
-Lastly, we'll train our network.
+Lastly, we'll orient our training data for the network, then train.
 
 ```python
+xtrain_kmers = [[word[i:i+k] for i in range(len(word)-k+1)] for sentence in corpus_words for word in sentence]
+xtrain_numeric = np.array([[word2vec_model.wv[word] for word in kmer_list] for kmer_list in xtrain_kmers])
+xtrain_numeric = xtrain_numeric.reshape(len(corpus_words), -1, 100)
+ytrain = np.concatenate([np.zeros(num_sequences), np.ones(num_sequences)], axis=0)
+
 num_epochs = 200; batch_sz = 32
 model.fit(xtrain_numeric,ytrain,epochs = num_epochs, batch_size = batch_sz, verbose = 1)
 ```
@@ -182,11 +187,11 @@ for i in range(0,num_test):
 corpus_words_test = []
 for i in range(0,len(corpus_sentences)):
   corpus_words_temp = []
-  for j in range(0,sub_len-k+1):
-    corpus_words_temp.append(corpus_sentences[i][j:j+k])
+  for j in range(0,sub_len-k_mers+1):
+    corpus_words_temp.append(corpus_sentences[i][j:j+k_mers])
   corpus_words_test.append(corpus_words_temp)
 
-xtest_kmers = [[word[i:i+k] for i in range(len(word)-k+1)] for sentence in corpus_words_test for word in sentence]
+xtest_kmers = [[word[i:i+k_mers] for i in range(len(word)-k_mers+1)] for sentence in corpus_words_test for word in sentence]
 xtest_numeric = np.array([[word2vec_model.wv[word] for word in kmer_list] for kmer_list in xtest_kmers])
 xtest_numeric = xtest_numeric.reshape(len(corpus_sent_test), -1, 100)
 ytest = np.concatenate([np.zeros(num_test), np.ones(num_test)], axis=0)
