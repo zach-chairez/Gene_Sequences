@@ -98,5 +98,5 @@ miss = np.where(y_test_original == -1)[0]; len_miss = len(miss)
 hit_or_miss = abs(np.round(y_predicted[miss])) == subseq_original[miss+1]
 accuracy = sum(sum(hit_or_miss))/len_miss*100
 ```
-
+The testing accuracy has been steadily in the upper 90's (usually 98 - 100%).  
 
