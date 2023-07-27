@@ -72,7 +72,7 @@ subsequences_a1 = subsequence_all_kmers(a1,k_mers,sub_len);
 subsequences_d1 = subsequence_all_kmers(d1,k_mers,sub_len);
 ```
 
-The sequences ```subsequences_a1``` and ```subsequences_d1``` may contain different numbers of sequences.  Also, since we need our training set of subsequences (sentences) to be large, we'll add an additional random set of subsequences of each sequence a1 and d1 until we have a total number of ```num_sequences * 2``` training points.  (```num_sequences``` total for each chromosome).
+The sequences ```subsequences_a1``` and ```subsequences_d1``` may contain different numbers of sequences.  Also, since we need our training set of subsequences (sentences) to be large, we'll add an additional random set of subsequences of each sequence a1 and d1 until we have a total number of ```num_train * 2``` training points.  (```num_train``` total for each chromosome).
 See below:
 
 ```python
@@ -186,7 +186,7 @@ subsequences_a1 = subsequence_all_kmers_neg_binomial(a1,k_mers,n,p);
 subsequences_d1 = subsequence_all_kmers_neg_binomial(d1,k_mers,n,p);
 ```
 
-The sequences ```subsequences_a1``` and ```subsequences_d1``` may contain different numbers of sequences.  Also, since we need our training set of subsequences (sentences) to be large, we'll add an additional random set of subsequences of each sequence a1 and d1 until we have a total number of ```num_sequences * 2``` training points.  (```num_sequences``` total for each chromosome).
+The sequences ```subsequences_a1``` and ```subsequences_d1``` may contain different numbers of sequences.  Also, since we need our training set of subsequences (sentences) to be large, we'll add an additional random set of subsequences of each sequence a1 and d1 until we have a total number of ```num_train * 2``` training points.  (```num_train``` total for each chromosome).
 See below:
 
 ```python
@@ -286,7 +286,7 @@ Lastly, we'll orient our training data for the network, then train.
 xtrain_kmers = [[word[i:i+k_mers] for i in range(len(word)-k_mers+1)] for sentence in corpus_words for word in sentence]
 xtrain_numeric = np.array([[word2vec_model.wv[word] for word in kmer_list] for kmer_list in xtrain_kmers])
 xtrain_numeric = xtrain_numeric.reshape(len(corpus_words), -1, 100)
-ytrain = np.concatenate([np.zeros(num_sequences), np.ones(num_sequences)], axis=0)
+ytrain = np.concatenate([np.zeros(num_train), np.ones(num_train)], axis=0)
 
 num_epochs = 200; batch_sz = 32
 model.fit(xtrain_numeric,ytrain,epochs = num_epochs, batch_size = batch_sz, verbose = 1)
