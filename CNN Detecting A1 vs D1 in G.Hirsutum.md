@@ -227,6 +227,14 @@ for i in range(0,len_d1):
 for i in range(0,len(d1_temp)):
   corpus_sentences.append(d1_temp[i])
 
+Now, in this case, since each string in ```corpus_sentences``` is of different length, we'll pad each one with the characters ```N``` until they are all the same length as the string of maximum length.  The CNN can only handle inputs of the same size.  In general, the padding won't affect the prediction performance.
+
+```python
+max_length = max(len(string) for string in corpus_sentences)
+padded_corpus_sentences = [string.ljust(max_length, "N") for string in corpus_sentences]
+
+```
+
 corpus_words = []
 for i in range(0,len(corpus_sentences)):
   corpus_words_temp = []
