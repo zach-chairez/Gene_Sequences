@@ -138,7 +138,7 @@ corpus_words = []
 sub_len = max_length
 for string in corpus_sentences:
     sep_sentence = [string[i:i+k_mers] for i in range(0,len(string))]
-    corpus_words.append(corpus_words_temp)
+    corpus_words.append(sep_sentence)
 
 # Non overlapping k-mers
 corpus_words = []
