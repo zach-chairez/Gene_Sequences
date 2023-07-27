@@ -135,10 +135,11 @@ for i in range(0,len(d1_temp)):
 
 # With overlapping k-mers
 corpus_words = []
-sub_len = max_length
-for string in corpus_sentences:
-    sep_sentence = [string[i:i+k_mers] for i in range(0,len(string))]
-    corpus_words.append(sep_sentence)
+for i in range(0,len(corpus_sentences)):
+  corpus_words_temp = []
+  for j in range(0,sub_len-k_mers+1):
+    corpus_words_temp.append(corpus_sentences[i][j:j+k_mers])
+  corpus_words.append(corpus_words_temp)
 
 # Non overlapping k-mers
 corpus_words = []
@@ -273,10 +274,11 @@ Then, take the new padded sentences and create sentences of words.
 ```python
 # With overlapping k-mers
 corpus_words = []
-sub_len = max_length
-for string in padded_corpus_sentences:
-    sep_sentence = [string[i:i+k_mers] for i in range(0,len(string))]
-    corpus_words.append(corpus_words_temp)
+for i in range(0,len(padded_corpus_sentences)):
+  corpus_words_temp = []
+  for j in range(0,sub_len-k_mers+1):
+    corpus_words_temp.append(padded_corpus_sentences[i][j:j+k_mers])
+  corpus_words.append(corpus_words_temp)
 
 # Non overlapping k-mers
 corpus_words = []
