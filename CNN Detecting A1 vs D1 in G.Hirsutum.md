@@ -316,7 +316,7 @@ for i in range(3):
     model_cnn.add(Dropout([0.15, 0.2, 0.25][i]))
 
 # Flatten layer
-model.add(Flatten())
+model_cnn.add(Flatten())
 
 # Fully connected layers
 model_cnn.add(Dense(32, activation='elu', kernel_regularizer=tf.keras.regularizers.l2(0.001),
