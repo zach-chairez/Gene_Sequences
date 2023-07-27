@@ -111,12 +111,25 @@ for i in range(0,len_d1):
 for i in range(0,len(d1_temp)):
   corpus_sentences.append(d1_temp[i])
 
+# With overlapping k-mers
 corpus_words = []
-for i in range(0,len(corpus_sentences)):
-  corpus_words_temp = []
-  for j in range(0,sub_len-k_mers+1):
-    corpus_words_temp.append(corpus_sentences[i][j:j+k_mers])
-  corpus_words.append(corpus_words_temp)
+sub_len = max_length
+for string in corpus_sentences:
+    sep_sentence = [string[i:i+k_mers] for i in range(0,len(string))]
+    corpus_words.append(corpus_words_temp)
+
+# Non overlapping k-mers
+corpus_words = []
+sub_len = max_length
+for string in corpus_sentences:
+    sep_sentence = [string[i:i+k_mers] for i in range(0,len(string),k_mers)]
+    last_word = sep_sentence[-1]
+    if len(last_word) < k_mers:
+       prev_segment = sep_sentence[-2]
+       num_pad_chars = k - len(last_word)
+       last_word = prev_segment[-num_pad_chars:] + last_word
+       sep_sentence[-1] = last_segment
+    corpus_words.append(sep_sentence)
 ```
 
 ### Option 2:  Generating subread lengths from Negative Binomial
@@ -236,13 +249,25 @@ padded_corpus_sentences = [string.ljust(max_length, "N") for string in corpus_se
 ```
 Then, take the new padded sentences and create sentences of words.  
 ```python
+# With overlapping k-mers
 corpus_words = []
 sub_len = max_length
-for i in range(0,len(padded_corpus_sentences)):
-  corpus_words_temp = []
-  for j in range(0,sub_len-k_mers+1):
-    corpus_words_temp.append(padded_corpus_sentences[i][j:j+k_mers])
-  corpus_words.append(corpus_words_temp)
+for string in padded_corpus_sentences:
+    sep_sentence = [string[i:i+k_mers] for i in range(0,len(string))]
+    corpus_words.append(corpus_words_temp)
+
+# Non overlapping k-mers
+corpus_words = []
+sub_len = max_length
+for string in padded_corpus_sentences:
+    sep_sentence = [string[i:i+k_mers] for i in range(0,len(string),k_mers)]
+    last_word = sep_sentence[-1]
+    if len(last_word) < k_mers:
+       prev_segment = sep_sentence[-2]
+       num_pad_chars = k - len(last_word)
+       last_word = prev_segment[-num_pad_chars:] + last_word
+       sep_sentence[-1] = last_segment
+    corpus_words.append(sep_sentence)
 ```
 
 ## Section 3:  Sequences $\rightarrow$ Sentences $\rightarrow$ Word Vectors $\rightarrow$ CNN
