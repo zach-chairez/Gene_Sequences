@@ -329,7 +329,7 @@ model_cnn.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.004, momentu
 
 # RNN Model
 model_rnn = Sequential()
-model_rnn.add(LSTM(64, input_shape=(x_train.shape[1], x_train.shape[2])))
+model_rnn.add(LSTM(64, input_shape=(xtrain_numeric.shape[1], xtrain_numeric.shape[2])))
 model_rnn.add(Dense(1, activation='sigmoid'))
 model_rnn.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
 ```
