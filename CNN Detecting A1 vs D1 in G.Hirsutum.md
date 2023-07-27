@@ -325,10 +325,10 @@ for i in range(num_test):
   corpus_sent_test.append(padded_sequence)
 
 corpus_words_test = []
-for i in range(0,len(corpus_sentences)):
+for i in range(0,len(corpus_sent_test)):
   corpus_words_temp = []
   for j in range(0,sub_len-k_mers+1):
-    corpus_words_temp.append(corpus_sentences[i][j:j+k_mers])
+    corpus_words_temp.append(corpus_sent_test[i][j:j+k_mers])
   corpus_words_test.append(corpus_words_temp)
 
 xtest_kmers = [[word[i:i+k_mers] for i in range(len(word)-k_mers+1)] for sentence in corpus_words_test for word in sentence]
