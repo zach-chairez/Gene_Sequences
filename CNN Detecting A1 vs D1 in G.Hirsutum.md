@@ -190,18 +190,18 @@ The sequences ```subsequences_a1``` and ```subsequences_d1``` may contain differ
 See below:
 
 ```python
-num_sequences = 1000
+num_train = 1000
 a1_temp = []
 d1_temp = []
 
 # For a1
-for i in range(0,num_sequences-len(subsequences_a1)):
+for i in range(0,num_train-len(subsequences_a1)):
   read_length = nbinom.rvs(n,p)
   n1 = np.random.randint(0,len(a1)-read_length-1)
   a1_temp.append(a1[n1:n1+read_length])
 
 # For d1
-for i in range(0,num_sequences-len(subsequences_d1)):
+for i in range(0,num_train-len(subsequences_d1)):
   read_length = nbinom.rvs(n,p)
   n1 = np.random.randint(0,len(d1)-read_length-1)
   d1_temp.append(d1[n1:n1+read_length])
