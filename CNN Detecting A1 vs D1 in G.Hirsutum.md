@@ -76,17 +76,17 @@ The sequences ```subsequences_a1``` and ```subsequences_d1``` may contain differ
 See below:
 
 ```python
-num_sequences = 10000
+num_train = 10000
 a1_temp = []
 d1_temp = []
 
 # For a1
-for i in range(0,num_sequences-len(subsequences_a1)):
+for i in range(0,num_train-len(subsequences_a1)):
   n1 = np.random.randint(0,len(a1)-sub_len-1)
   a1_temp.append(a1[n1:n1+sub_len])
 
 # For d1
-for i in range(0,num_sequences-len(subsequences_d1)):
+for i in range(0,num_train-len(subsequences_d1)):
   n1 = np.random.randint(0,len(d1)-sub_len-1)
   d1_temp.append(d1[n1:n1+sub_len])
 ```
@@ -123,8 +123,9 @@ for i in range(0,len(corpus_sentences)):
 
 ```python
 import scipy
-from scipy.optimize import minimize
 import pandas as pd
+import matplotlib.pyplot as plt
+from scipy.stats import nbinom
 ```
 
 Here, we'll import the text file ```CCS_read_length.txt``` to establish parameters for a negative binomial distribution.
@@ -148,9 +149,23 @@ sample_variance = np.sum((data_points - sample_mean) ** 2 * frequencies) / np.su
 n = round((sample_mean ** 2) / (sample_variance - sample_mean))
 p = (sample_mean / sample_variance)
 ```
-Now, we'll generate subsequences similar to that in Option 1.  We'll define a similar yet modified version of ```subsequence_all_kmers``` to take into account varying subsequence lengths.
+Now, we'll generate subsequences similar to that in Option 1.  We'll define a similar yet modified version of ```subsequence_all_kmers``` to take into account varying subsequence lengths.  We'll keep the same version of ```find_kmers```.  
 
 ```python
+# Find different k-mers in a sequence
+def find_kmers(base_string,k):
+    unique_permutations = set()
+    # Generate all possible 4-mer permutations
+    permutations = [''.join(p) for p in product('ACTGN', repeat=k)]
+    # Iterate over the sequence
+    for i in range(len(base_string) - k-1):
+        subsequence = base_string[i:i + k]
+        # Check if subsequence contains valid bases
+        if all(base in 'ACTGN' for base in subsequence):
+            unique_permutations.add(subsequence)
+    return unique_permutations
+
+# Create subsequences of length from negative binomial with all k_mers present for training.
 def subsequence_all_kmers_neg_binomial(base_string, k, n_val, p_val):
     kmers = find_kmers(base_string, k)
     final_subsequences = []
