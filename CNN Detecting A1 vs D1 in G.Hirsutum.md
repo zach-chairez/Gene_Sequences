@@ -237,10 +237,11 @@ padded_corpus_sentences = [string.ljust(max_length, "N") for string in corpus_se
 Then, take the new padded sentences and create sentences of words.  
 ```python
 corpus_words = []
-for i in range(0,len(corpus_sentences)):
+sub_len = max_length
+for i in range(0,len(padded_corpus_sentences)):
   corpus_words_temp = []
   for j in range(0,sub_len-k_mers+1):
-    corpus_words_temp.append(corpus_sentences[i][j:j+k_mers])
+    corpus_words_temp.append(padded_corpus_sentences[i][j:j+k_mers])
   corpus_words.append(corpus_words_temp)
 ```
 
