@@ -18,6 +18,28 @@ from tensorflow.keras.optimizers import SGD
 The function ```read_fasta_file``` can be found in the folder python_functions.  It's used to load a fasta file path, then outputs the headers and sequences.  We'll first load the following:
 
 ```python
+def read_fasta_file(file_path):
+    headers = []
+    sequences = []
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+        current_header = None
+        current_sequence = ""
+        for line in lines:
+            line = line.strip()
+            if line.startswith('>'):
+                if current_header is not None:
+                    headers.append(current_header)
+                    sequences.append(current_sequence)
+                current_header = line[1:]
+                current_sequence = ""
+            else:
+                current_sequence += line
+        # Append the last sequence to the lists
+        headers.append(current_header)
+        sequences.append(current_sequence)
+    return headers, sequences
+
 # read_fasta_file reads the file path, then outputs the headers and sequences.
 h, seq = read_fasta_file('/project/90daydata/gbru_sugarcane_seq/Zach/Cotton/cotton1.fa')
 
