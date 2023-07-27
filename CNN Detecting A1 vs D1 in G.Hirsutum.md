@@ -264,9 +264,9 @@ for string in padded_corpus_sentences:
     last_word = sep_sentence[-1]
     if len(last_word) < k_mers:
        prev_segment = sep_sentence[-2]
-       num_pad_chars = k - len(last_word)
+       num_pad_chars = k_mers - len(last_word)
        last_word = prev_segment[-num_pad_chars:] + last_word
-       sep_sentence[-1] = last_segment
+       sep_sentence[-1] = last_word
     corpus_words.append(sep_sentence)
 ```
 
