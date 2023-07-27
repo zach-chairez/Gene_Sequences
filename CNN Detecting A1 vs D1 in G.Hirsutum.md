@@ -303,28 +303,35 @@ word2vec_model = Word2Vec(sentences=corpus_words, sg=0, vector_size=100, window=
 We'll then take all of our sentences, transform them with ```word2vec_model``` for training.
 
 ```python
-model = Sequential()
+# CNN Model
+model_cnn = Sequential()
 
 # Convolution blocks
 for i in range(3):
-    model.add(Conv1D(filters=[32, 32, 16][i], kernel_size=[5, 5, 4][i], strides=1, activation='elu', padding='same',
+    model_cnn.add(Conv1D(filters=[32, 32, 16][i], kernel_size=[5, 5, 4][i], strides=1, activation='elu', padding='same',
                      kernel_regularizer=tf.keras.regularizers.l2(0.0001), bias_regularizer=tf.keras.regularizers.l2(0.0001)
                     ))  
-    model.add(GroupNormalization(groups=[4, 4, 2][i]))
-    model.add(MaxPooling1D(pool_size=[4, 4, 2][i], strides=2))
-    model.add(Dropout([0.15, 0.2, 0.25][i]))
+    model_cnn.add(GroupNormalization(groups=[4, 4, 2][i]))
+    model_cnn.add(MaxPooling1D(pool_size=[4, 4, 2][i], strides=2))
+    model_cnn.add(Dropout([0.15, 0.2, 0.25][i]))
 
 # Flatten layer
 model.add(Flatten())
 
 # Fully connected layers
-model.add(Dense(32, activation='elu', kernel_regularizer=tf.keras.regularizers.l2(0.001),
+model_cnn.add(Dense(32, activation='elu', kernel_regularizer=tf.keras.regularizers.l2(0.001),
                 bias_regularizer=tf.keras.regularizers.l2(0.001)))
-model.add(Dense(1, activation='sigmoid'))
+model_cnn.add(Dense(1, activation='sigmoid'))
 
 # Compile the model
-model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.004, momentum=0.95),
+model_cnn.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.004, momentum=0.95),
               loss='binary_crossentropy', metrics=['accuracy'])
+
+# RNN Model
+model_rnn = Sequential()
+model_rnn.add(LSTM(64, input_shape=(x_train.shape[1], x_train.shape[2])))
+model_rnn.add(Dense(1, activation='sigmoid'))
+model_rnn.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
 ```
 
 Lastly, we'll orient our training data for the network, then train.
