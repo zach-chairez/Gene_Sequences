@@ -304,19 +304,25 @@ a1_test = chromosome_test[0]; a1_test = a1_test.upper()
 d1_test = chromosome_test[13]; d1_test = d1_test.upper()
 
 corpus_sent_test = []
-num_test = 500
+num_test = 50
 
 # For a1
-for i in range(num_test)):
+for i in range(num_test):
+  temp_sequence = []; padded_sequence = []
   read_length = nbinom.rvs(n,p)
   n1 = np.random.randint(0,len(a1_test)-read_length-1)
-  corpus_sent_test.append(a1[n1:n1+read_length])
+  temp_sequence = a1[n1:n1+read_length])
+  padded_sequence = temp_sequence.ljust(max_length, "N")
+  corpus_sent_test.append(padded_sequence)
 
 # For d1
 for i in range(num_test):
+  temp_sequence = []; padded_sequence = []
   read_length = nbinom.rvs(n,p)
-  n1 = np.random.randint(0,len(d1)-read_length-1)
-  corpus_sent_test.append(d1[n1:n1+read_length])
+  n1 = np.random.randint(0,len(d1_test)-read_length-1)
+  temp_sequence = a1[n1:n1+read_length])
+  padded_sequence = temp_sequence.ljust(max_length, "N")
+  corpus_sent_test.append(padded_sequence)
 
 corpus_words_test = []
 for i in range(0,len(corpus_sentences)):
