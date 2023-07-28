@@ -368,6 +368,19 @@ d1_test = chromosome_test[13]; d1_test = d1_test.upper()
 corpus_sent_test = []
 num_test = 50
 
+# Creating reads from set length
+# For a1
+for i in range(0,num_test):
+  n1 = np.random.randint(0,len(a1_test)-sub_len-1)
+  a1_temp.append(a1_test[n1:n1+sub_len])
+
+# For d1
+for i in range(0,num_test):
+  n1 = np.random.randint(0,len(d1_test)-sub_len-1)
+  d1_temp.append(d1_test[n1:n1+sub_len])
+
+
+# Creating reads via Negative Binomial
 # For a1
 for i in range(num_test):
   temp_sequence = []; padded_sequence = []
