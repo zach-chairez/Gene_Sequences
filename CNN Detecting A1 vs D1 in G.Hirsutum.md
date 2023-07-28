@@ -143,7 +143,6 @@ for i in range(0,len(corpus_sentences)):
 
 # Non overlapping k-mers
 corpus_words = []
-sub_len = max_length
 for string in corpus_sentences:
     sep_sentence = [string[i:i+k_mers] for i in range(0,len(string),k_mers)]
     last_word = sep_sentence[-1]
@@ -299,6 +298,8 @@ for string in padded_corpus_sentences:
 Next, using an NLP function ```Word2Vec```, we can assign meaningul values to each word in a sentence, transforming them from strings into vectors.  
 
 ```python
+num_epochs_words = 30
+vec_size_words = 200
 word2vec_model = Word2Vec(sentences=corpus_words, sg=0, vector_size=100, window=5, min_count=1, negative=5, workers=4, epochs=20)
 ```
 
@@ -341,7 +342,7 @@ Lastly, we'll orient our training data for the network, then train.
 ```python
 xtrain_kmers = [[word[i:i+k_mers] for i in range(len(word)-k_mers+1)] for sentence in corpus_words for word in sentence]
 xtrain_numeric = np.array([[word2vec_model.wv[word] for word in kmer_list] for kmer_list in xtrain_kmers])
-xtrain_numeric = xtrain_numeric.reshape(len(corpus_words), -1, 100)
+xtrain_numeric = xtrain_numeric.reshape(len(corpus_words), -1, vec_size_words)
 ytrain = np.concatenate([np.zeros(num_train), np.ones(num_train)], axis=0)
 
 num_epochs = 200; batch_sz = 32
