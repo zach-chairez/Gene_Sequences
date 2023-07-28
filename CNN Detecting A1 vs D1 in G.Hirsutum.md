@@ -300,7 +300,7 @@ Next, using an NLP function ```Word2Vec```, we can assign meaningul values to ea
 ```python
 num_epochs_words = 30
 vec_size_words = 200
-word2vec_model = Word2Vec(sentences=corpus_words, sg=0, vector_size=100, window=5, min_count=1, negative=5, workers=4, epochs=20)
+word2vec_model = Word2Vec(sentences=corpus_words, sg=0, vector_size=vec_size_words, window=5, min_count=1, negative=5, workers=4, epochs=num_epochs_words)
 ```
 
 We'll then take all of our sentences, transform them with ```word2vec_model``` for training.
