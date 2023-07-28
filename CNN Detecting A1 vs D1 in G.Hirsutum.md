@@ -373,7 +373,7 @@ for i in range(num_test):
   temp_sequence = []; padded_sequence = []
   read_length = nbinom.rvs(n,p)
   n1 = np.random.randint(0,len(a1_test)-read_length-1)
-  temp_sequence = a1[n1:n1+read_length]
+  temp_sequence = a1_test[n1:n1+read_length]
   # padded_sequence = temp_sequence.ljust(sub_len, "N")
   # corpus_sent_test.append(padded_sequence)
   corpus_sent_test.append(temp_sequence)
@@ -383,7 +383,7 @@ for i in range(num_test):
   temp_sequence = []; padded_sequence = []
   read_length = nbinom.rvs(n,p)
   n1 = np.random.randint(0,len(d1_test)-read_length-1)
-  temp_sequence = a1[n1:n1+read_length]
+  temp_sequence = d1_test[n1:n1+read_length]
   # padded_sequence = temp_sequence.ljust(sub_len, "N")
   # corpus_sent_test.append(padded_sequence)
   corpus_sent_test.append(temp_sequence)
@@ -391,7 +391,6 @@ for i in range(num_test):
 Now that we've generated our subreads to test, we need to go one by one, create random samples of length ```sub_len``` as defined earlier, then test each one independently in a voting system. 
 
 ```python
-
 num_test_inner = 1000
 a1_test_inner = []; d1_test_inner = []
 # sub_len was defined as 41 in this ReadMe
