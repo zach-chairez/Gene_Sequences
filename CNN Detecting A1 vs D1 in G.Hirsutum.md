@@ -372,12 +372,12 @@ num_test = 50
 # For a1
 for i in range(0,num_test):
   n1 = np.random.randint(0,len(a1_test)-sub_len-1)
-  a1_temp.append(a1_test[n1:n1+sub_len])
+  corpus_sent_test.append(a1_test[n1:n1+sub_len])
 
 # For d1
 for i in range(0,num_test):
   n1 = np.random.randint(0,len(d1_test)-sub_len-1)
-  d1_temp.append(d1_test[n1:n1+sub_len])
+  corpus_sent_test.append(d1_test[n1:n1+sub_len])
 
 
 # Creating reads via Negative Binomial
