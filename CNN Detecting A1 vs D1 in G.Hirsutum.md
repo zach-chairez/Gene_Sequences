@@ -387,14 +387,37 @@ for i in range(num_test):
   # padded_sequence = temp_sequence.ljust(sub_len, "N")
   # corpus_sent_test.append(padded_sequence)
   corpus_sent_test.append(temp_sequence)
+```
+Now that we've generated our subreads to test, we need to go one by one, create random samples of length ```sub_len``` as defined earlier, then test each one independently in a voting system. 
 
-corpus_words_test = []
-for i in range(0,len(corpus_sent_test)):
-  corpus_words_temp = []
+```python
+
+num_test_inner = 1000
+a1_test_inner = []; d1_test_inner = []
+# sub_len was defined as 41 in this ReadMe
+
+# For a1
+for i in range(num_test_inner):
+  n1 = np.random.randint(0,len(a1)-sub_len-1)
+  a1_temp.append(a1[n1:n1+sub_len])
+
+# For d1
+for i in range(num_test_inner):
+  n1 = np.random.randint(0,len(d1)-sub_len-1)
+  d1_temp.append(d1[n1:n1+sub_len])
+```
+Then we'll pass each set of inner test sequences to create their own corpus_words variable.
+
+```python
+corpus_words_inner_test = []
+for i in range(0,len(a1_test_inner)):
+  corpus_words_inner_temp = []
   for j in range(0,sub_len-k_mers+1):
-    corpus_words_temp.append(corpus_sent_test[i][j:j+k_mers])
-  corpus_words_test.append(corpus_words_temp)
+    corpus_words_inner_temp.append(a1_test_inner[i][j:j+k_mers])
+  corpus_words_inner_test.append(corpus_words_inner_temp)
+```
 
+```python
 xtest_kmers = [[word[i:i+k_mers] for i in range(len(word)-k_mers+1)] for sentence in corpus_words_test for word in sentence]
 xtest_numeric = np.array([[word2vec_model.wv[word] for word in kmer_list] for kmer_list in xtest_kmers])
 xtest_numeric = xtest_numeric.reshape(len(corpus_sent_test), -1, 100)
