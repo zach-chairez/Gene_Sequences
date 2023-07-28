@@ -379,6 +379,14 @@ for i in range(0,num_test):
   n1 = np.random.randint(0,len(d1_test)-sub_len-1)
   corpus_sent_test.append(d1_test[n1:n1+sub_len])
 
+# With overlapping k-mers
+corpus_words_test = []
+for i in range(0,len(corpus_sent_test)):
+  corpus_words_temp = []
+  for j in range(0,sub_len-k_mers+1):
+    corpus_words_temp.append(corpus_sent_test[i][j:j+k_mers])
+  corpus_words_test.append(corpus_words_temp)
+
 
 # Creating reads via Negative Binomial
 # For a1
