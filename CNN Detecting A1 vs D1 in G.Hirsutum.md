@@ -440,7 +440,7 @@ for i in range(0,len(a1_test_inner)):
 ```python
 xtest_kmers = [[word[i:i+k_mers] for i in range(len(word)-k_mers+1)] for sentence in corpus_words_test for word in sentence]
 xtest_numeric = np.array([[word2vec_model.wv[word] for word in kmer_list] for kmer_list in xtest_kmers])
-xtest_numeric = xtest_numeric.reshape(len(corpus_sent_test), -1, 100)
+xtest_numeric = xtest_numeric.reshape(len(corpus_sent_test), -1, vec_size_words)
 ytest = np.concatenate([np.zeros(num_test), np.ones(num_test)], axis=0)
 ```
 
