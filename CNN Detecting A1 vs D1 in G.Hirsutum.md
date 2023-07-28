@@ -370,7 +370,7 @@ for i in range(num_test):
   temp_sequence = a1[n1:n1+read_length]
   # padded_sequence = temp_sequence.ljust(sub_len, "N")
   # corpus_sent_test.append(padded_sequence)
-  corpus_sent_test.append(temp_sentence)
+  corpus_sent_test.append(temp_sequence)
 
 # For d1
 for i in range(num_test):
@@ -380,7 +380,7 @@ for i in range(num_test):
   temp_sequence = a1[n1:n1+read_length]
   # padded_sequence = temp_sequence.ljust(sub_len, "N")
   # corpus_sent_test.append(padded_sequence)
-  corpus_sent_test.append(temp_sentence)
+  corpus_sent_test.append(temp_sequence)
 
 corpus_words_test = []
 for i in range(0,len(corpus_sent_test)):
