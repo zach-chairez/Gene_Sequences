@@ -346,7 +346,12 @@ xtrain_numeric = xtrain_numeric.reshape(len(corpus_words), -1, vec_size_words)
 ytrain = np.concatenate([np.zeros(num_train), np.ones(num_train)], axis=0)
 
 num_epochs = 200; batch_sz = 32
-model.fit(xtrain_numeric,ytrain,epochs = num_epochs, batch_size = batch_sz, verbose = 1)
+
+# CNN Model
+model_cnn.fit(xtrain_numeric,ytrain,epochs = num_epochs, batch_size = batch_sz, verbose = 1)
+
+# RNN Model
+model_rnn.fit(xtrain_numeric,ytrain,epochs = num_epochs, batch_size = batch_sz, verbose = 1)
 ```
 
 - $\textbf{Important Note}$:  When ```num_epochs``` $= 200$, the testing accuracy is $\sim 84$%.  It increases as the number of epochs increase.
