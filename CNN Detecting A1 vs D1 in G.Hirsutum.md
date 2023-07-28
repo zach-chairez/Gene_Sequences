@@ -368,8 +368,9 @@ for i in range(num_test):
   read_length = nbinom.rvs(n,p)
   n1 = np.random.randint(0,len(a1_test)-read_length-1)
   temp_sequence = a1[n1:n1+read_length]
-  padded_sequence = temp_sequence.ljust(max_length, "N")
-  corpus_sent_test.append(padded_sequence)
+  # padded_sequence = temp_sequence.ljust(sub_len, "N")
+  # corpus_sent_test.append(padded_sequence)
+  corpus_sent_test.append(temp_sentence)
 
 # For d1
 for i in range(num_test):
@@ -377,8 +378,9 @@ for i in range(num_test):
   read_length = nbinom.rvs(n,p)
   n1 = np.random.randint(0,len(d1_test)-read_length-1)
   temp_sequence = a1[n1:n1+read_length]
-  padded_sequence = temp_sequence.ljust(max_length, "N")
-  corpus_sent_test.append(padded_sequence)
+  # padded_sequence = temp_sequence.ljust(sub_len, "N")
+  # corpus_sent_test.append(padded_sequence)
+  corpus_sent_test.append(temp_sentence)
 
 corpus_words_test = []
 for i in range(0,len(corpus_sent_test)):
