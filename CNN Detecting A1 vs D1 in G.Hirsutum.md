@@ -98,18 +98,28 @@ The sequences ```subsequences_a1``` and ```subsequences_d1``` may contain differ
 See below:
 
 ```python
+# Option 1:  Randomlmy selecting subsequences in each chromosome 
 num_train = 10000
 a1_temp = []
 d1_temp = []
 
 # For a1
-for i in range(0,len(a1)-sub_len-1,k_mers):
-  # n1 = np.random.randint(0,len(a1)-sub_len-1)
+for i in range(0,num_train-len(subsequences_a1)):
+  n1 = np.random.randint(0,len(a1)-sub_len-1)
+  a1_temp.append(a1[n1:n1+sub_len])
+
+# For d1
+for i in range(0,num_train-len(subsequences_d1)):
+  n1 = np.random.randint(0,len(d1)-sub_len-1)
+  d1_temp.append(d1[n1:n1+sub_len])
+
+# Option 2:  Collecting all subsequences of length sub_len for training.
+# For a1
+for i in range(0,len(a1)-sub_len-1):
   a1_temp.append(a1[i:i+sub_len])
 
 # For d1
-for i in range(0,len(d1)-sub_len-1,k_mers):
-  # n1 = np.random.randint(0,len(d1)-sub_len-1)
+for i in range(0,len(a1)-sub_len-1):
   d1_temp.append(d1[i:i+sub_len])
 ```
 Then, we'll combine all the subsequences into a single variable called ```corpus_sentences``` containing all the subsequences (sentences).  Note that each subsequence is a single string of length n (ACTGGATCATA...)  
