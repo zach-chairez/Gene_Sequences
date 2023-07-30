@@ -321,7 +321,7 @@ model_cnn = Sequential()
 for i in range(3):
     model_cnn.add(Conv1D(filters=[32, 32, 16][i], kernel_size=[5, 5, 4][i], strides=1, activation='elu', padding='same',
                      kernel_regularizer=tf.keras.regularizers.l2(0.0001), bias_regularizer=tf.keras.regularizers.l2(0.0001)
-                    ))  
+                    input_shape = (sub_len-k+1,vec_size_words))  
     model_cnn.add(GroupNormalization(groups=[4, 4, 2][i]))
     model_cnn.add(MaxPooling1D(pool_size=[4, 4, 2][i], strides=2))
     model_cnn.add(Dropout([0.15, 0.2, 0.25][i]))
