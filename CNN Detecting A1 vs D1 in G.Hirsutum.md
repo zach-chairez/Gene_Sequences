@@ -10,9 +10,9 @@ import numpy as np
 import tensorflow as tf
 import random
 from itertools import product
-from tensorflow.keras.layers import Conv1D, MaxPooling1D, Flatten, Dense, Dropout, GroupNormalization, Embedding
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.optimizers import SGD
+import tensorflow as tf
+from tensorflow.keras.layers import Conv1D, MaxPooling1D, Dropout, Flatten, Dense, GroupNormalization, Input
+from tensorflow.keras.activations import elu, sigmoid
 ```
 
 The function ```read_fasta_file``` can be found in the folder python_functions.  It's used to load a fasta file path, then outputs the headers and sequences.  We'll first load the following:
@@ -315,33 +315,45 @@ We'll then take all of our sentences, transform them with ```word2vec_model``` f
 
 ```python
 # CNN Model
-model_cnn = Sequential()
+# Define the parameters
+vec_size_words = 100
+
+# Create an Input layer with the desired input shape
+input_shape = (sub_len - k + 1, vec_size_words)
+input_layer = Input(shape=input_shape)
 
 # Convolution blocks
-for i in range(3):
-    model_cnn.add(Conv1D(filters=[32, 32, 16][i], kernel_size=[5, 5, 4][i], strides=1, activation='elu', padding='same',
-                     kernel_regularizer=tf.keras.regularizers.l2(0.0001), bias_regularizer=tf.keras.regularizers.l2(0.0001),input_shape = (sub_len-k+1,vec_size_words))  
-    model_cnn.add(GroupNormalization(groups=[4, 4, 2][i]))
-    model_cnn.add(MaxPooling1D(pool_size=[4, 4, 2][i], strides=2))
-    model_cnn.add(Dropout([0.15, 0.2, 0.25][i]))
+def create_conv_block(x, filters, kernel_size, pool_size, dropout_rate, groups):
+    x = Conv1D(filters=filters, kernel_size=kernel_size, strides=1, activation=elu, padding='same', 
+               kernel_regularizer=tf.keras.regularizers.l2(0.0001), bias_regularizer=tf.keras.regularizers.l2(0.0001))(x)
+    x = GroupNormalization(groups=groups)(x)
+    x = MaxPooling1D(pool_size=pool_size, strides=2)(x)
+    x = Dropout(dropout_rate)(x)
+    return x
+
+# First Convolution block
+conv_block1 = create_conv_block(input_layer, filters=32, kernel_size=5, pool_size=4, dropout_rate=0.15, groups=4)
+
+# Second Convolution block
+conv_block2 = create_conv_block(conv_block1, filters=32, kernel_size=5, pool_size=4, dropout_rate=0.2, groups=4)
+
+# Third Convolution block
+conv_block3 = create_conv_block(conv_block2, filters=16, kernel_size=4, pool_size=2, dropout_rate=0.25, groups=2)
 
 # Flatten layer
-model_cnn.add(Flatten())
+flatten_layer = Flatten()(conv_block3)
 
 # Fully connected layers
-model_cnn.add(Dense(32, activation='elu', kernel_regularizer=tf.keras.regularizers.l2(0.001),
-                bias_regularizer=tf.keras.regularizers.l2(0.001)))
-model_cnn.add(Dense(1, activation='sigmoid'))
+fc_layer1 = Dense(32, activation=elu, kernel_regularizer=tf.keras.regularizers.l2(0.001), bias_regularizer=tf.keras.regularizers.l2(0.001))(flatten_layer)
+fc_layer2 = Dense(1, activation=sigmoid)(fc_layer1)  # Assuming it's binary classification
+
+# Create the model
+model_cnn = tf.keras.models.Model(inputs=input_layer, outputs=fc_layer2)
 
 # Compile the model
-model_cnn.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.004, momentum=0.95),
-              loss='binary_crossentropy', metrics=['accuracy'])
+optimizer = tf.keras.optimizers.SGD(learning_rate=0.004, momentum=0.95)
+model_cnn.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy'])
 
-# RNN Model
-model_rnn = Sequential()
-model_rnn.add(LSTM(64, input_shape=(xtrain_numeric.shape[1], xtrain_numeric.shape[2])))
-model_rnn.add(Dense(1, activation='sigmoid'))
-model_rnn.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
 ```
 
 Lastly, we'll orient our training data for the network, then train.
