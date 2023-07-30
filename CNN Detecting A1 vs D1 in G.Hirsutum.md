@@ -76,7 +76,7 @@ def subsequence_all_kmers(base_string, k, n):
     kmers = find_kmers(base_string, k)
     final_subsequences = []
     while len(kmers) > 0:
-        start_index = random.randint(0, len(base_string) - n)
+        start_index = np.random.randint(0, len(base_string) - n)
         subsequence = base_string[start_index:start_index + n]
         if any(kmer in subsequence for kmer in kmers):
             final_subsequences.append(subsequence)
