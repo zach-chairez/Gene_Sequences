@@ -62,8 +62,6 @@ The first function creates a list of all k-mers present in a sequence, while the
 # Find different k-mers in a sequence
 def find_kmers(base_string,k):
     unique_permutations = set()
-    # Generate all possible 4-mer permutations
-    permutations = [''.join(p) for p in product('ACTGN', repeat=k)]
     # Iterate over the sequence
     for i in range(len(base_string) - k-1):
         subsequence = base_string[i:i + k]
