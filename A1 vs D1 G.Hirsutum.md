@@ -8,6 +8,7 @@ We'll start by loading all the necessary packages:
 ```python
 from gensim.models import Word2Vec
 import numpy as np
+import math
 import tensorflow as tf
 from itertools import product
 from tensorflow.keras.layers import Conv1D, MaxPooling1D, Dropout, Flatten, Dense, GroupNormalization, Input
@@ -40,14 +41,27 @@ def read_fasta_file(file_path):
     return headers, sequences
 
 # read_fasta_file reads the file path, then outputs the headers and sequences.
-# The cotton file chosen was arbitrary (you can add any fasta file of interest)
+# The cotton file chosen was arbitrarily (you can add any fasta file of interest)
 h, seq = read_fasta_file('/project/90daydata/gbru_sugarcane_seq/Zach/Cotton/cotton1.fa')
 
 # In this project, we're considering G.Hirsutum and the relationship between A1 and D1
 # Here, we're assigning the chromosomes A1 and D1 accordingly.
 # The step .upper() takes all the lowercase letters (a,c,t,g) and capitalizes them.
-a1 = seq[0]; a1 = a1.upper()
-d1 = seq[13]; d1 = d1.upper()
+a1 = seq[0]; a1_len = len(a1)
+d1 = seq[13]; d1_len = len(d1)
+
+# If you'd like to look at all the unique entries (bases) of the sequences, use this:
+a1_unique = list(set(a1)
+d1_unique = list(set(d1))
+
+# Then print
+print(a1_unique)
+print(d1_unique)
+
+# Some bases may be lowercase, or missing (n or N).  Use this to capitalize all the bases
+# otherwise they may be counted as unique entries when we want (A/a, C/c, T/t, G/g, and N/n) to be read the same.
+a1 = a1.upper()
+d1 = d1.upper()
 ```
 
 ## Section 2:  Generating Subreads for A1/D1 Classification
@@ -85,7 +99,7 @@ def subsequence_all_kmers(base_string, k, n):
     return final_subsequences
 
 ```
-Now we'll generate subsequences to create sentences from to build our dictionary of words for our network.
+We'll now gnenerate subsequences randomly whose union contains all k-mers present from A1 and D1.  
 ```python
 k_mers = 3
 sub_len = 41
@@ -97,51 +111,54 @@ The sequences ```subsequences_a1``` and ```subsequences_d1``` may contain differ
 See below:
 
 ```python
-# Option 1:  Randomlmy selecting subsequences in each chromosome 
-num_train = 10000
-a1_temp = []
-d1_temp = []
+# Option 1:  Randomlmy selecting subsequences in each chromosome
+read_length = 62000
 
-# For a1
-for i in range(0,num_train-len(subsequences_a1)):
-  n1 = np.random.randint(0,len(a1)-sub_len-1)
-  a1_temp.append(a1[n1:n1+sub_len])
+a1_train = []
+d1_train = []
 
-# For d1
-for i in range(0,num_train-len(subsequences_d1)):
-  n1 = np.random.randint(0,len(d1)-sub_len-1)
-  d1_temp.append(d1[n1:n1+sub_len])
+a1_train_num = math.ceil(a1_len/read_length)
+d1_train_num = math.ceil(d1_len/read_length)
 
-# Option 2:  Collecting all subsequences of length sub_len for training.
-# For a1
-for i in range(0,len(a1)-sub_len-1):
-  a1_temp.append(a1[i:i+sub_len])
+for i in range(0,a1_train_num,read_length):
+    a1_train.append(a1[i:i+read_length])
+    if len(a1_train[-1]) < read_length:
+        temp = a1_train[-2]
+        rem_len = read_length - len(a1_train[-1])
+        a1_train[-1] = temp[-rem_len:] + a1_train[-1]  
+for i in range(0,d1_train_num,read_length):
+    d1_train.append(d1[i:i+read_length])
+    if len(d1_train[-1]) < read_length:
+        temp = d1_train[-2]
+        rem_len = read_length - len(d1_train[-1])
+        d1_train[-1] = temp[-rem_len:] + d1_train[-1]    
 
-# For d1
-for i in range(0,len(a1)-sub_len-1):
-  d1_temp.append(d1[i:i+sub_len])
-```
+temp = [a1_train_num,d1_train_num]
+num_train = max(temp)
+remainder = abs(a1_train_num-d1_train_num)
+min_indx = temp.index(min(temp))
+if min_indx == 0:
+    for i in range(remainder):
+        n1 = np.random.randint(a1_len-read_length-1)
+        a1_train.append(a1[n1:n1+read+length])
+else:
+    for i in range(remainder):
+        n1 = np.random.randint(d1_len-read_length-1)
+        d1_train.append(d1[n1:n1+read+length])   
+
+
 Then, we'll combine all the subsequences into a single variable called ```corpus_sentences``` containing all the subsequences (sentences).  Note that each subsequence is a single string of length n (ACTGGATCATA...)  
 
 The subsequneces will then be split by their k-mers, giving off the impression of it being a sentence of words. (ACTG GATC ATA...)  The final set of sentences will be assigned to the variable ```corpus_words```.  
 
 ```python
 corpus_sentences = [];
-len_a1 = len(subsequences_a1)
-len_d1 = len(subsequences_d1)
+for i in range(num_train):
+    corpus_sentences.append(a1_train[i])
+for i in range(num_train):
+    corpus_sentences.append(d1_train[i])
 
-for i in range(0,len_a1):
-  corpus_sentences.append(subsequences_a1[i])
-
-for i in range(0,len(a1_temp)):
-  corpus_sentences.append(a1_temp[i])
-
-for i in range(0,len_d1):
-  corpus_sentences.append(subsequences_d1[i])
-
-for i in range(0,len(d1_temp)):
-  corpus_sentences.append(d1_temp[i])
-
+# Option 1:  Words whose characters overlap (Overlapping k-mers)
 # With overlapping k-mers
 corpus_words = []
 for i in range(0,len(corpus_sentences)):
@@ -150,6 +167,7 @@ for i in range(0,len(corpus_sentences)):
     corpus_words_temp.append(corpus_sentences[i][j:j+k_mers])
   corpus_words.append(corpus_words_temp)
 
+# Option 1:  Words whose characters don't overlap (Non-overlapping k-mers)
 # Non overlapping k-mers
 corpus_words = []
 for string in corpus_sentences:
@@ -160,145 +178,6 @@ for string in corpus_sentences:
        num_pad_chars = k - len(last_word)
        last_word = prev_segment[-num_pad_chars:] + last_word
        sep_sentence[-1] = last_segment
-    corpus_words.append(sep_sentence)
-```
-
-### Option 2:  Generating subread lengths from Negative Binomial
-
-```python
-import scipy
-import pandas as pd
-import matplotlib.pyplot as plt
-from scipy.stats import nbinom
-```
-
-Here, we'll import the text file ```CCS_read_length.txt``` to establish parameters for a negative binomial distribution.
-
-```python
-# Import text file, assign the frequencies and read_lengths (data_points) accordingly.
-df = pd.read_csv('/project/90daydata/gbru_sugarcane_seq/Zach/CCS_read_length.txt', header = None, sep = ' ')
-df = df.iloc[:,6:]
-frequencies = np.array(df[6]); data_points = np.array(df[7])
-
-# Remove all the nan entries.
-nan_indices = np.isnan(data_points)
-data_points = data_points[~nan_indices]
-frequencies = frequencies[~nan_indices]
-
-# Find sample mean and variance.
-sample_mean = np.sum(data_points * frequencies) / np.sum(frequencies)
-sample_variance = np.sum((data_points - sample_mean) ** 2 * frequencies) / np.sum(frequencies)
-
-# Compute negative binomial parameters.
-n = round((sample_mean ** 2) / (sample_variance - sample_mean))
-p = (sample_mean / sample_variance)
-```
-Now, we'll generate subsequences similar to that in Option 1.  We'll define a similar yet modified version of ```subsequence_all_kmers``` to take into account varying subsequence lengths.  We'll keep the same version of ```find_kmers```.  
-
-```python
-# Find different k-mers in a sequence
-def find_kmers(base_string,k):
-    unique_permutations = set()
-    # Generate all possible 4-mer permutations
-    permutations = [''.join(p) for p in product('ACTGN', repeat=k)]
-    # Iterate over the sequence
-    for i in range(len(base_string) - k-1):
-        subsequence = base_string[i:i + k]
-        # Check if subsequence contains valid bases
-        if all(base in 'ACTGN' for base in subsequence):
-            unique_permutations.add(subsequence)
-    return unique_permutations
-
-# Create subsequences of length from negative binomial with all k_mers present for training.
-def subsequence_all_kmers_neg_binomial(base_string, k, n_val, p_val):
-    kmers = find_kmers(base_string, k)
-    final_subsequences = []
-    while len(kmers) > 0:
-        read_length = nbinom.rvs(n_val,p_val)
-        start_index = random.randint(0, len(base_string) - read_length)
-        subsequence = base_string[start_index:start_index + read_length]
-        if any(kmer in subsequence for kmer in kmers):
-            final_subsequences.append(subsequence)
-            kmers -= {kmer for kmer in kmers if kmer in subsequence}
-    return final_subsequences
-```
-
-Now we'll generate subsequences to create sentences from to build our dictionary of words for our network.
-```python
-k_mers = 3
-subsequences_a1 = subsequence_all_kmers_neg_binomial(a1,k_mers,n,p);
-subsequences_d1 = subsequence_all_kmers_neg_binomial(d1,k_mers,n,p);
-```
-
-The sequences ```subsequences_a1``` and ```subsequences_d1``` may contain different numbers of sequences.  Also, since we need our training set of subsequences (sentences) to be large, we'll add an additional random set of subsequences of each sequence a1 and d1 until we have a total number of ```num_train * 2``` training points.  (```num_train``` total for each chromosome).
-See below:
-
-```python
-num_train = 1000
-a1_temp = []
-d1_temp = []
-
-# For a1
-for i in range(0,num_train-len(subsequences_a1)):
-  read_length = nbinom.rvs(n,p)
-  n1 = np.random.randint(0,len(a1)-read_length-1)
-  a1_temp.append(a1[n1:n1+read_length])
-
-# For d1
-for i in range(0,num_train-len(subsequences_d1)):
-  read_length = nbinom.rvs(n,p)
-  n1 = np.random.randint(0,len(d1)-read_length-1)
-  d1_temp.append(d1[n1:n1+read_length])
-```
-Then, we'll combine all the subsequences into a single variable called ```corpus_sentences``` containing all the subsequences (sentences).  Note that each subsequence is a single string of length n (ACTGGATCATA...)  
-
-The subsequneces will then be split by their k-mers, giving off the impression of it being a sentence of words. (ACTG GATC ATA...)  The final set of sentences will be assigned to the variable ```corpus_words```.  
-
-```python
-corpus_sentences = [];
-len_a1 = len(subsequences_a1)
-len_d1 = len(subsequences_d1)
-
-for i in range(0,len_a1):
-  corpus_sentences.append(subsequences_a1[i])
-
-for i in range(0,len(a1_temp)):
-  corpus_sentences.append(a1_temp[i])
-
-for i in range(0,len_d1):
-  corpus_sentences.append(subsequences_d1[i])
-
-for i in range(0,len(d1_temp)):
-  corpus_sentences.append(d1_temp[i])
-```
-
-Now, in this case, since each string in ```corpus_sentences``` is of different length, we'll pad each one with the characters ```N``` until they are all the same length as the string of maximum length.  The CNN can only handle inputs of the same size.  In general, the padding won't affect the prediction performance.
-
-```python
-max_length = max(len(string) for string in corpus_sentences)
-padded_corpus_sentences = [string.ljust(max_length, "N") for string in corpus_sentences]
-```
-Then, take the new padded sentences and create sentences of words.  
-```python
-# With overlapping k-mers
-corpus_words = []
-for i in range(0,len(padded_corpus_sentences)):
-  corpus_words_temp = []
-  for j in range(0,sub_len-k_mers+1):
-    corpus_words_temp.append(padded_corpus_sentences[i][j:j+k_mers])
-  corpus_words.append(corpus_words_temp)
-
-# Non overlapping k-mers
-corpus_words = []
-sub_len = max_length
-for string in padded_corpus_sentences:
-    sep_sentence = [string[i:i+k_mers] for i in range(0,len(string),k_mers)]
-    last_word = sep_sentence[-1]
-    if len(last_word) < k_mers:
-       prev_segment = sep_sentence[-2]
-       num_pad_chars = k_mers - len(last_word)
-       last_word = prev_segment[-num_pad_chars:] + last_word
-       sep_sentence[-1] = last_word
     corpus_words.append(sep_sentence)
 ```
 
