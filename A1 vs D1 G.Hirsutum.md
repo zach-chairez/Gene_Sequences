@@ -66,49 +66,6 @@ d1 = d1.upper()
 
 ## Section 2:  Generating Subreads for A1/D1 Classification
 ### Option 1:  Generating Reads of Set Length (not from Negative Binomial)
-Next, we'll define two functions:  
-- 1. ```find_kmers``` 
-- 2.  ```subsequence_all_kmers```
-
-The first function creates a list of all k-mers present in a sequence, while the second function generates subsequences of some length n, ensuring that all k-mers established from the first function are present in the generated subsequences.  This is important as it's necessary to create a "dictionary of words (k-mers)" for our network.  We're going to approach this problem from a natural language processing (NLP) point of view, treating each k-mer as a word in a sequence (or sentence).  
-
-```python
-
-# Find different k-mers in a sequence
-def find_kmers(base_string,k):
-    unique_permutations = set()
-    # Iterate over the sequence
-    for i in range(len(base_string) - k-1):
-        subsequence = base_string[i:i + k]
-        # Check if subsequence contains valid bases
-        if all(base in 'ACTGN' for base in subsequence):
-            unique_permutations.add(subsequence)
-    return unique_permutations
-```
-```python
-# Generate subsequences based on k-mer
-def subsequence_all_kmers(base_string, k, n):
-    kmers = find_kmers(base_string, k)
-    final_subsequences = []
-    while len(kmers) > 0:
-        start_index = np.random.randint(0, len(base_string) - n)
-        subsequence = base_string[start_index:start_index + n]
-        if any(kmer in subsequence for kmer in kmers):
-            final_subsequences.append(subsequence)
-            kmers -= {kmer for kmer in kmers if kmer in subsequence}
-    return final_subsequences
-
-```
-We'll now gnenerate subsequences randomly whose union contains all k-mers present from A1 and D1.  
-```python
-k_mers = 3
-sub_len = 41
-subsequences_a1 = subsequence_all_kmers(a1,k_mers,sub_len);
-subsequences_d1 = subsequence_all_kmers(d1,k_mers,sub_len);
-```
-
-The sequences ```subsequences_a1``` and ```subsequences_d1``` may contain different numbers of sequences.  Also, since we need our training set of subsequences (sentences) to be large, we'll add an additional random set of subsequences of each sequence a1 and d1 until we have a total number of ```num_train * 2``` training points.  (```num_train``` total for each chromosome).
-See below:
 
 ```python
 # Option 1:  Randomlmy selecting subsequences in each chromosome
