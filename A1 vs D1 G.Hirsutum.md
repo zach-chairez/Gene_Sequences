@@ -74,21 +74,22 @@ read_length = 62000
 a1_train = []
 d1_train = []
 
-a1_train_num = math.ceil(a1_len/read_length)
-d1_train_num = math.ceil(d1_len/read_length)
-
-for i in range(0,a1_train_num,read_length):
-    a1_train.append(a1[i:i+read_length])
+a1_train = []
+d1_train = []
+for i in range(0,a1_len,read_length):
+    a1_train.append(a[i:i+read_length])
     if len(a1_train[-1]) < read_length:
         temp = a1_train[-2]
         rem_len = read_length - len(a1_train[-1])
         a1_train[-1] = temp[-rem_len:] + a1_train[-1]  
-for i in range(0,d1_train_num,read_length):
-    d1_train.append(d1[i:i+read_length])
+for i in range(0,d1_len,read_length):
+    d1_train.append(d[i:i+read_length])
     if len(d1_train[-1]) < read_length:
         temp = d1_train[-2]
         rem_len = read_length - len(d1_train[-1])
-        d1_train[-1] = temp[-rem_len:] + d1_train[-1]    
+        d1_train[-1] = temp[-rem_len:] + d1_train[-1] 
+a1_train_num = len(a1_train)
+d1_train_num = len(d1_train)   
 
 temp = [a1_train_num,d1_train_num]
 num_train = max(temp)
