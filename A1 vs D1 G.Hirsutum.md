@@ -102,13 +102,14 @@ else:
     for i in range(remainder):
         n1 = np.random.randint(d1_len-read_length-1)
         d1_train.append(d1[n1:n1+read+length])   
-
+```
 
 Then, we'll combine all the subsequences into a single variable called ```corpus_sentences``` containing all the subsequences (sentences).  Note that each subsequence is a single string of length n (ACTGGATCATA...)  
 
 The subsequneces will then be split by their k-mers, giving off the impression of it being a sentence of words. (ACTG GATC ATA...)  The final set of sentences will be assigned to the variable ```corpus_words```.  
 
 ```python
+k_mers = 11
 corpus_sentences = [];
 for i in range(num_train):
     corpus_sentences.append(a1_train[i])
@@ -124,7 +125,7 @@ for i in range(0,len(corpus_sentences)):
     corpus_words_temp.append(corpus_sentences[i][j:j+k_mers])
   corpus_words.append(corpus_words_temp)
 
-# Option 1:  Words whose characters don't overlap (Non-overlapping k-mers)
+# Option 2:  Words whose characters don't overlap (Non-overlapping k-mers)
 # Non overlapping k-mers
 corpus_words = []
 for string in corpus_sentences:
@@ -143,9 +144,9 @@ for string in corpus_sentences:
 Next, using an NLP function ```Word2Vec```, we can assign meaningul values to each word in a sentence, transforming them from strings into vectors.  
 
 ```python
-num_epochs_words = 30
-vec_size_words = 200
-word2vec_model = Word2Vec(sentences=corpus_words, sg=0, vector_size=vec_size_words, window=5, min_count=1, negative=5, workers=4, epochs=num_epochs_words)
+num_epochs_words = 20
+vec_size_words = 100
+word2vec_model = Word2Vec(sentences=corpus_words, sg=0, vector_size=vec_size_words, window=5, min_count=5, negative=5, workers=4, epochs=num_epochs_words)
 ```
 
 We'll then take all of our sentences, transform them with ```word2vec_model``` for training.
@@ -156,7 +157,7 @@ We'll then take all of our sentences, transform them with ```word2vec_model``` f
 vec_size_words = 100
 
 # Create an Input layer with the desired input shape
-input_shape = (sub_len - k + 1, vec_size_words)
+input_shape = (read_length - k_mers + 1, vec_size_words)
 input_layer = Input(shape=input_shape)
 
 # Convolution blocks
@@ -201,16 +202,12 @@ xtrain_numeric = np.array([[word2vec_model.wv[word] for word in kmer_list] for k
 xtrain_numeric = xtrain_numeric.reshape(len(corpus_words), -1, vec_size_words)
 ytrain = np.concatenate([np.zeros(num_train), np.ones(num_train)], axis=0)
 
-num_epochs = 200; batch_sz = 32
+num_epochs = 100; batch_sz = 32
 
 # CNN Model
 model_cnn.fit(xtrain_numeric,ytrain,epochs = num_epochs, batch_size = batch_sz, verbose = 1)
 
-# RNN Model
-model_rnn.fit(xtrain_numeric,ytrain,epochs = num_epochs, batch_size = batch_sz, verbose = 1)
 ```
-
-- $\textbf{Important Note}$:  When ```num_epochs``` $= 200$, the testing accuracy is $\sim 84$%.  It increases as the number of epochs increase.
 
 Once the training is complete, we can test our model with a new G.Hirsutum file.
 
@@ -222,7 +219,7 @@ a1_test = chromosome_test[0]; a1_test = a1_test.upper()
 d1_test = chromosome_test[13]; d1_test = d1_test.upper()
 
 corpus_sent_test = []
-num_test = 50
+num_test = 500
 
 # Creating reads from set length
 # For a1
@@ -243,57 +240,6 @@ for i in range(0,len(corpus_sent_test)):
     corpus_words_temp.append(corpus_sent_test[i][j:j+k_mers])
   corpus_words_test.append(corpus_words_temp)
 
-
-# Creating reads via Negative Binomial
-# For a1
-for i in range(num_test):
-  temp_sequence = []; padded_sequence = []
-  read_length = nbinom.rvs(n,p)
-  n1 = np.random.randint(0,len(a1_test)-read_length-1)
-  temp_sequence = a1_test[n1:n1+read_length]
-  # padded_sequence = temp_sequence.ljust(sub_len, "N")
-  # corpus_sent_test.append(padded_sequence)
-  corpus_sent_test.append(temp_sequence)
-
-# For d1
-for i in range(num_test):
-  temp_sequence = []; padded_sequence = []
-  read_length = nbinom.rvs(n,p)
-  n1 = np.random.randint(0,len(d1_test)-read_length-1)
-  temp_sequence = d1_test[n1:n1+read_length]
-  # padded_sequence = temp_sequence.ljust(sub_len, "N")
-  # corpus_sent_test.append(padded_sequence)
-  corpus_sent_test.append(temp_sequence)
-```
-Now that we've generated our subreads to test, we need to go one by one, create random samples of length ```sub_len``` as defined earlier, then test each one independently in a voting system. 
-
-```python
-num_test_inner = 1000
-a1_test_inner = []; d1_test_inner = []
-# sub_len was defined as 41 in this ReadMe
-
-# For a1
-for i in range(num_test_inner):
-  n1 = np.random.randint(0,len(a1)-sub_len-1)
-  a1_temp.append(a1[n1:n1+sub_len])
-
-# For d1
-for i in range(num_test_inner):
-  n1 = np.random.randint(0,len(d1)-sub_len-1)
-  d1_temp.append(d1[n1:n1+sub_len])
-```
-Then we'll pass each set of inner test sequences to create their own corpus_words variable.
-
-```python
-corpus_words_inner_test = []
-for i in range(0,len(a1_test_inner)):
-  corpus_words_inner_temp = []
-  for j in range(0,sub_len-k_mers+1):
-    corpus_words_inner_temp.append(a1_test_inner[i][j:j+k_mers])
-  corpus_words_inner_test.append(corpus_words_inner_temp)
-```
-
-```python
 xtest_kmers = [[word[i:i+k_mers] for i in range(len(word)-k_mers+1)] for sentence in corpus_words_test for word in sentence]
 xtest_numeric = np.array([[word2vec_model.wv[word] for word in kmer_list] for kmer_list in xtest_kmers])
 xtest_numeric = xtest_numeric.reshape(len(corpus_sent_test), -1, vec_size_words)
