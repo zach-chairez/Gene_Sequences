@@ -121,7 +121,7 @@ for i in range(num_train):
 corpus_words = []
 for i in range(0,len(corpus_sentences)):
   corpus_words_temp = []
-  for j in range(0,sub_len-k_mers+1):
+  for j in range(0,read_length-k_mers+1):
     corpus_words_temp.append(corpus_sentences[i][j:j+k_mers])
   corpus_words.append(corpus_words_temp)
 
@@ -221,19 +221,19 @@ num_test = 500
 # Creating reads from set length
 # For a1
 for i in range(0,num_test):
-  n1 = np.random.randint(0,len(a1_test)-sub_len-1)
-  corpus_sent_test.append(a1_test[n1:n1+sub_len])
+  n1 = np.random.randint(0,len(a1_test)-read_length-1)
+  corpus_sent_test.append(a1_test[n1:n1+read_length])
 
 # For d1
 for i in range(0,num_test):
-  n1 = np.random.randint(0,len(d1_test)-sub_len-1)
-  corpus_sent_test.append(d1_test[n1:n1+sub_len])
+  n1 = np.random.randint(0,len(d1_test)-read_length-1)
+  corpus_sent_test.append(d1_test[n1:n1+read_length])
 
 # With overlapping k-mers
 corpus_words_test = []
 for i in range(0,len(corpus_sent_test)):
   corpus_words_temp = []
-  for j in range(0,sub_len-k_mers+1):
+  for j in range(0,read_length-k_mers+1):
     corpus_words_temp.append(corpus_sent_test[i][j:j+k_mers])
   corpus_words_test.append(corpus_words_temp)
 
