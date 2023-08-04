@@ -1,5 +1,6 @@
-d- In this file, we'll walk through the steps taken to create the convolutional neural network (CNN) which is used to detect the origin of subreads to either A1 or D1 of G.Hirsutum.
-- $\textbf{Important Note:}$ The current code is written to handle missing entries as indicated by $N$.  Note that we can use the network as described in ```RNN Missing Values.md``` to fill in the missing entries first, then run it through this pipeline.  
+- In this file, we'll walk through the steps taken to create the convolutional neural network (CNN) which is used to detect the origin of subreads to either A1 or D1 of G.Hirsutum.
+- $\textbf{Important Note:}$ The current code is written to handle missing entries as indicated by $N$.  Note that we can use the network as described in ```RNN Missing Values.md``` to fill in the missing entries first, then run it through this pipeline.
+- I would suggest creating a conda environment specific for this project so as not to interfere with any dependencies.  
 
 ## Section 1:  Importing Packages and Data
 
@@ -8,9 +9,7 @@ We'll start by loading all the necessary packages:
 from gensim.models import Word2Vec
 import numpy as np
 import tensorflow as tf
-import random
 from itertools import product
-import tensorflow as tf
 from tensorflow.keras.layers import Conv1D, MaxPooling1D, Dropout, Flatten, Dense, GroupNormalization, Input
 from tensorflow.keras.activations import elu, sigmoid
 ```
@@ -41,8 +40,10 @@ def read_fasta_file(file_path):
     return headers, sequences
 
 # read_fasta_file reads the file path, then outputs the headers and sequences.
+# The cotton file chosen was arbitrary (you can add any fasta file of interest)
 h, seq = read_fasta_file('/project/90daydata/gbru_sugarcane_seq/Zach/Cotton/cotton1.fa')
 
+# In this project, we're considering G.Hirsutum and the relationship between A1 and D1
 # Here, we're assigning the chromosomes A1 and D1 accordingly.
 # The step .upper() takes all the lowercase letters (a,c,t,g) and capitalizes them.
 a1 = seq[0]; a1 = a1.upper()
