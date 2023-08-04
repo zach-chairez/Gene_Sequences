@@ -97,7 +97,7 @@ min_indx = temp.index(min(temp))
 if min_indx == 0:
     for i in range(remainder):
         n1 = np.random.randint(a1_len-read_length-1)
-        a1_train.append(a1[n1:n1+read+length])
+        a1_train.append(a1[n1:n1+read_length])
 else:
     for i in range(remainder):
         n1 = np.random.randint(d1_len-read_length-1)
