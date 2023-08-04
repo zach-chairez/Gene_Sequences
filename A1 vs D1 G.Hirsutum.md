@@ -153,9 +153,6 @@ We'll then take all of our sentences, transform them with ```word2vec_model``` f
 
 ```python
 # CNN Model
-# Define the parameters
-vec_size_words = 100
-
 # Create an Input layer with the desired input shape
 input_shape = (read_length - k_mers + 1, vec_size_words)
 input_layer = Input(shape=input_shape)
