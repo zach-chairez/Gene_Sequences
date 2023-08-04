@@ -68,7 +68,7 @@ d1 = d1.upper()
 ### Option 1:  Generating Reads of Set Length (not from Negative Binomial)
 
 ```python
-# Option 1:  Randomlmy selecting subsequences in each chromosome
+# Option 1:  Collecting all unique subsequences of length ```read_length``` from A1 and D1 for training.
 read_length = 62000
 
 a1_train = []
