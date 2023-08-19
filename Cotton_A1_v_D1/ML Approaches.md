@@ -1,4 +1,6 @@
-In this document, we'll cover some common approaches to the binary classification problem.  Our objective is to determine if a reed belongs to A1 or D1 in Cotton (G.Hirsutum)
+- In this document, we'll cover some common approaches to the binary classification problem.  Our objective is to determine if a reed belongs to A1 or D1 in Cotton (G.Hirsutum).
+- The functions ```read_fasta_file``` and ```change_bases_to_int``` can be found in the folder ```python_functions```.
+
 
 
 # Section 1: Logistic Regression
