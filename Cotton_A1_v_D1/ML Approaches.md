@@ -127,3 +127,16 @@ accuracy_knn = sum(check_accuracy)/len(predictions)
 
 
 # Section 3:  Support Vector Machines (SVM)
+*Refer to Section 1 for preparing the training and testing data*
+
+```python
+from sklearn import svm
+
+# Here, you can try ```svm.SVC(), svm.LinearSVC()```, or ```svm.SGDClassifier()```.  I went with the first here.
+model_svm = svm.SVC()
+model_svm.fit(train,train_labels)
+
+model_svm.predict(test)
+check_accuracy = predictions == test_labels
+accuracy_svm = sum(check_accuracy)/len(predictions)
+```
