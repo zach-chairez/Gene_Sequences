@@ -99,7 +99,7 @@ cross_val = 5
 
 for k_val in k_values:
   model_knn = knn(n_neighbors = k_val)
-  score = sklearn.model_selection.corss_val_score(model_knn,train,train_labels,cv = cross_val)
+  score = sklearn.model_selection.cross_val_score(model_knn,train,train_labels,cv = cross_val)
   scores.append(np.mean(score))
 ```
 
