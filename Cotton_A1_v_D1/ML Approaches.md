@@ -87,7 +87,7 @@ accuracy_knn = sum(check)/len(predictions)
 ```
 
 Notes:
-1.  The value of ```num_neighbors``` should  be tweeked.  We can always implement a cross validation algorithm to find a best value.  
+1.  The value of ```num_neighbors``` should  be tweaked.  We can always implement a cross validation algorithm to find a best value.  
 
 ```python
 max_k_value = 20
