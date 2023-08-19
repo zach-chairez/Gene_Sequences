@@ -1,4 +1,4 @@
-In this document, we'll cover some common approaches to the binary classification problem.  Our  main is determining if a reed belongs to A1 or D1 in Cotton (G.Hirsutum)
+In this document, we'll cover some common approaches to the binary classification problem.  Our objective is to determine if a reed belongs to A1 or D1 in Cotton (G.Hirsutum)
 
 
 # Section 1: Logistic Regression
