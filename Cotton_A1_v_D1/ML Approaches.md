@@ -65,7 +65,7 @@ test_labels = np.concatenate([np.zeros(num_test),np.ones(num_test)],axis=0)
 
 predictions = model_lr.predict(test)
 check_accuracy = predictions == test_labels
-accuracy_lr = sum(check)/len(predictions)
+accuracy_lr = sum(check_accuracy)/len(predictions)
 ```
 
 # Section 2:  k-Nearest Neighbors (kNN)
@@ -83,7 +83,7 @@ model_knn.fit(train,train_labels)
 
 predictions = model_knn.predict(test)
 check_accuracy = predictions == test_labels
-accuracy_knn = sum(check)/len(predictions)
+accuracy_knn = sum(check_accuracy)/len(predictions)
 ```
 
 Notes:
@@ -120,7 +120,7 @@ model_knn.fit(train,train_labels)
 
 predictions = model_knn.predict(test)
 check_accuracy = predictions == test_labels
-accuracy_knn = sum(check)/len(predictions)
+accuracy_knn = sum(check_accuracy)/len(predictions)
 ```
 
 
