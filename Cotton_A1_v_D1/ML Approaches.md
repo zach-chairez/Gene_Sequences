@@ -17,7 +17,7 @@ Next, we'll upload a fasta file which contains the cotton info.  There are eight
 cotton_path = '/project/90daydata/gbru_sugarcane_seq/Zach/Cotton/insert_cotton_file_of_interest_here.fa'
 ```
 
-Then, we'll upload the fasta file and select the chromosomes A1 and D1
+Then, we'll upload the fasta file and select the chromosomes A1 and D1 while changing the bases (ACTGN) to integers (01234)
 ```python
 _,sequences = read_fasta_file(cotton_path)
 a1 = sequences[0]; a1 = a1.upper()
@@ -25,7 +25,7 @@ d1 = sequences[13]; d1 = d1.upper()
 a1_ints = change_bases_to_int(a1)
 d1_ints = change_bases_to_int(d1)
 ```
-The module ```upper()``` turns all the lwoercase letters uppercase.  We'll then turn the bases into integers.  
+The module ```upper()``` turns all the lwoercase letters uppercase.
 
 ```python
 train = []; num_train = 100000
