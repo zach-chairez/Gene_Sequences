@@ -132,7 +132,7 @@ accuracy_knn = sum(check_accuracy)/len(predictions)
 ```python
 from sklearn import svm
 
-# Here, you can try ```svm.SVC(), svm.LinearSVC()```, or ```svm.SGDClassifier()```.  I went with the first here.
+# Here, you can try svm.SVC(), svm.LinearSVC(), or svm.SGDClassifier().  I went with the first here.
 model_svm = svm.SVC()
 model_svm.fit(train,train_labels)
 
