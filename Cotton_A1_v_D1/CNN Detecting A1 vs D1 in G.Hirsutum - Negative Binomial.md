@@ -112,35 +112,32 @@ p = (sample_mean / sample_variance)
 
 ```python
 k_mers = 3
-read_length = int(max(data_points)) + 2*math.sqrt(sample_variance)
+read_length = 2000
 subsequences_a1 = subsequence_all_kmers(a1,k_mers,read_length);
 subsequences_d1 = subsequence_all_kmers(d1,k_mers,read_length);
 ```
+
+Note:  The value of ```k_mers``` should be tweaked.  Try values in the interval [2,M], where M is still up in the air.  (I've seen ```k_mers``` as defined as 11).  
 
 The sequences ```subsequences_a1``` and ```subsequences_d1``` may contain different numbers of sequences.  Also, since we need our training set of subsequences (sentences) to be large, we'll add an additional random set of subsequences of each sequence a1 and d1 until we have a total number of ```num_train * 2``` training points.  (```num_train``` total for each chromosome).
 See below:
 
 ```python
-num_train = 5000
-a1_temp = []
-d1_temp = []
+num_train = 100000
+a1_temp = []; d1_temp = []
+max_a1_start = len(a1) - read_length - 1
+max_d1_start = len(d1) - read_length - 1
 
 # For a1
 for i in range(0,num_train-len(subsequences_a1)):
-  temp_read_length = nbinom.rvs(n,p)
-  n1 = np.random.randint(0,len(a1)-temp_read_length-1)
-  temp_read = a1[n1:n1+temp_read_length]
-  if len(temp_read) < read_length:
-    temp_read = temp_read.ljust(read_length,"N")
-  a1_temp.append(temp_read)
+  n1 = np.random.randint(0,max_a1_start)
+  temp_read = a1[n1:n1+read_length]
+  a1_temp.append(temp_read)  
 
 # For d1
 for i in range(0,num_train-len(subsequences_d1)):
-  temp_read_length = nbinom.rvs(n,p)
-  n1 = np.random.randint(0,len(d1)-temp_read_length-1)
-  temp_read = d1[n1:n1+temp_read_length]
-  if len(temp_read) < read_length:
-    temp_read = temp_read.ljust(read_length,"N")
+  n1 = np.random.randint(0,max_d1_start)
+  temp_read = d1[n1:n1+read_length]
   d1_temp.append(temp_read)
 ```
 Then, we'll combine all the subsequences into a single variable called ```corpus_sentences``` containing all the subsequences (sentences).  Note that each subsequence is a single string of length n (ACTGGATCATA...)  
