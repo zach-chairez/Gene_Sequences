@@ -50,7 +50,7 @@ a1 = seq[0]; a1 = a1.upper()
 d1 = seq[13]; d1 = d1.upper()
 ```
 
-## Section 2:  Generating Subreads for A1/D1 Classification via Negative Binomial Estimation
+## Section 2:  Generating Subreads for A1/D1 Classification
 Next, we'll define two functions (can be found in the folder ```python_functions```:  
 - 1. ```find_kmers``` 
 - 2.  ```subsequence_all_kmers```
