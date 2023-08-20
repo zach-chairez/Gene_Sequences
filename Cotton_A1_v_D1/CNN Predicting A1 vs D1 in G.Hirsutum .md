@@ -45,7 +45,7 @@ def read_fasta_file(file_path):
 h, seq = read_fasta_file('/project/90daydata/gbru_sugarcane_seq/Zach/Cotton/cotton1.fa')
 
 # Here, we're assigning the chromosomes A1 and D1 accordingly.
-# The step .upper() takes all the lowercase letters (a,c,t,g) and capitalizes them.
+# The step .upper() takes all the lowercase letters (a,c,t,g,n) and capitalizes them.
 a1 = seq[0]; a1 = a1.upper()
 d1 = seq[13]; d1 = d1.upper()
 ```
@@ -83,30 +83,6 @@ def subsequence_all_kmers(base_string, k, n):
             kmers -= {kmer for kmer in kmers if kmer in subsequence}
     return final_subsequences
 
-```
-Now we'll generate subsequences to create sentences from to build our dictionary of words for our network.  The value of ```read_length``` will be set to a large enough value
-so that the negative binomial distribution random values will be less than that (for padding purposes).
-
-Here, we'll import the text file ```CCS_read_length.txt``` to establish parameters for a negative binomial distribution.
-
-```python
-# Import text file, assign the frequencies and read_lengths (data_points) accordingly.
-df = pd.read_csv('/project/90daydata/gbru_sugarcane_seq/Zach/CCS_read_length.txt', header = None, sep = ' ')
-df = df.iloc[:,6:]
-frequencies = np.array(df[6]); data_points = np.array(df[7])
-
-# Remove all the nan entries.
-nan_indices = np.isnan(data_points)
-data_points = data_points[~nan_indices]
-frequencies = frequencies[~nan_indices]
-
-# Find sample mean and variance.
-sample_mean = np.sum(data_points * frequencies) / np.sum(frequencies)
-sample_variance = np.sum((data_points - sample_mean) ** 2 * frequencies) / np.sum(frequencies)
-
-# Compute negative binomial parameters.
-n = round((sample_mean ** 2) / (sample_variance - sample_mean))
-p = (sample_mean / sample_variance)
 ```
 
 ```python
