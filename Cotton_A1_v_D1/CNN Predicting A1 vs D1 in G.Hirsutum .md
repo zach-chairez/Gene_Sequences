@@ -115,9 +115,7 @@ for i in range(0,num_train-len(subsequences_d1)):
   temp_read = d1[n1:n1+read_length]
   d1_temp.append(temp_read)
 ```
-Then, we'll combine all the subsequences into a single variable called ```corpus_sentences``` containing all the subsequences (sentences).  Note that each subsequence is a single string of length n (ACTGGATCATA...)  
-
-The subsequneces will then be split by their k-mers, giving off the impression of it being a sentence of words. (ACTG GATC ATA...)  The final set of sentences will be assigned to the variable ```corpus_words```.  
+Then, we'll combine all the subsequences into a single variable called ```corpus_sentences``` containing all the subsequences (sentences).  Note that each subsequence is a single string of length ```read_length```.  
 
 ```python
 corpus_sentences = [];
@@ -136,7 +134,9 @@ for i in range(0,len_d1):
 for i in range(0,len(d1_temp)):
   corpus_sentences.append(d1_temp[i])
 ```
-Then, take the new padded sentences and create sentences of words.  
+
+The subsequneces will then be split by their k-mers, giving off the impression of it being a sentence of words. (ACTG GATC ATA...)  The final set of sentences will be assigned to the variable ```corpus_words```.
+
 ```python
 
 # Option 1:  With overlapping k-mers
@@ -160,6 +160,10 @@ for string in padded_corpus_sentences:
        sep_sentence[-1] = last_word
     corpus_words.append(sep_sentence)
 ```
+
+Note:  There are two different ways to approach the section above.  Suppose we selected a read with the following pattern (...TACGATA...):
+1. Option 1 will take the portion TACGATA and turn it into TAC ACG CGA GAT ATA (assuming ```k_mers``` is set to 3).  (Option 1 will need more memory in the long run compared to Option 2)
+2. Option 2 will take the portion TACGATA and turn it into TAC GAT ATA (assuming ```k_mers``` is set to 3.  Note here that we can't split apart the sequence by 3's.  If that's the case, it'll make the last bit overlap with the second to last bit.)  (Option 2 will take less memory to run as opposed to Option 1.1)
 
 ## Section 3:  Sequences $\rightarrow$ Sentences $\rightarrow$ Word Vectors $\rightarrow$ CNN
 ### 3.1 Training
