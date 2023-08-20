@@ -6,14 +6,14 @@
 We'll start by loading all the necessary packages:
 ```python
 from gensim.models import Word2Vec
+import sklearn
+from sklearn.utils import shuffle
 import numpy as np
 import tensorflow as tf
 from itertools import product
 from tensorflow.keras.layers import Conv1D, MaxPooling1D, Dropout, Flatten, Dense, GroupNormalization, Input
 from tensorflow.keras.activations import elu, sigmoid
-import scipy
 import pandas as pd
-from scipy.stats import nbinom
 ```
 
 The function ```read_fasta_file``` can be found in the folder python_functions.  It's used to load a fasta file path, then outputs the headers and sequences.  We'll first load the following:
@@ -227,14 +227,14 @@ xtrain_numeric = np.array([[word2vec_model.wv[word] for word in kmer_list] for k
 xtrain_numeric = xtrain_numeric.reshape(len(corpus_words), -1, vec_size_words)
 ytrain = np.concatenate([np.zeros(num_train), np.ones(num_train)], axis=0)
 
+xtrain_numeric,ytrain = shuffle(xtrain_numeric,ytrain)
+
 num_epochs = 100; batch_sz = 32
 
 # CNN Model
 model_cnn.fit(xtrain_numeric,ytrain,epochs = num_epochs, batch_size = batch_sz, verbose = 1)
-model_cnn.save('/project/90daydata/gbru_sugarcane_seq/Zach_moved/full_cnn_model_neg_binomial.h5')
+model_cnn.save('/insert/path/to/save/model/model_cnn.h5')
 ```
-
-- $\textbf{Important Note}$:  When ```num_epochs``` $= 200$, the testing accuracy is $\sim 84$%.  It increases as the number of epochs increase.
 
 Once the training is complete, we can test our model with a new G.Hirsutum file.
 
@@ -246,7 +246,7 @@ a1_test = chromosome_test[0]; a1_test = a1_test.upper()
 d1_test = chromosome_test[13]; d1_test = d1_test.upper()
 
 corpus_sent_test = []
-num_test = 50
+num_test = 500
 
 # Creating reads from set length
 # For a1
@@ -267,34 +267,26 @@ for i in range(0,len(corpus_sent_test)):
     corpus_words_temp.append(corpus_sent_test[i][j:j+k_mers])
   corpus_words_test.append(corpus_words_temp)
 
-
-# Creating reads via Negative Binomial
-# For a1
-for i in range(num_test):
-  temp_sequence = []; padded_sequence = []
-  read_length = nbinom.rvs(n,p)
-  n1 = np.random.randint(0,len(a1_test)-read_length-1)
-  temp_sequence = a1_test[n1:n1+read_length]
-  # padded_sequence = temp_sequence.ljust(read_length, "N")
-  # corpus_sent_test.append(padded_sequence)
-  corpus_sent_test.append(temp_sequence)
-
-# For d1
-for i in range(num_test):
-  temp_sequence = []; padded_sequence = []
-  read_length = nbinom.rvs(n,p)
-  n1 = np.random.randint(0,len(d1_test)-read_length-1)
-  temp_sequence = d1_test[n1:n1+read_length]
-  # padded_sequence = temp_sequence.ljust(read_length, "N")
-  # corpus_sent_test.append(padded_sequence)
-  corpus_sent_test.append(temp_sequence)
+# With non-overlapping k-mers
+# Option 2:  Non overlapping k-mers
+corpus_words_test = []
+read_length = max_length
+for string in corpus_sent_test:
+    sep_sentence = [string[i:i+k_mers] for i in range(0,len(string),k_mers)]
+    last_word = sep_sentence[-1]
+    if len(last_word) < k_mers:
+       prev_segment = sep_sentence[-2]
+       num_pad_chars = k_mers - len(last_word)
+       last_word = prev_segment[-num_pad_chars:] + last_word
+       sep_sentence[-1] = last_word
+    corpus_words_test.append(sep_sentence)
 ```
-Now that we've generated our subreads to test, we need to go one by one, create random samples of length ```read_length``` as defined earlier, then test each one independently in a voting system. 
+
+The flow of these testing bits follow the same flow of training (without the model fitting part).
 
 ```python
 num_test_inner = 1000
 a1_test_inner = []; d1_test_inner = []
-# read_length was defined as 41 in this ReadMe
 
 # For a1
 for i in range(num_test_inner):
@@ -326,7 +318,5 @@ ytest = np.concatenate([np.zeros(num_test), np.ones(num_test)], axis=0)
 
 Test (Evaluate) the model:
 ```python
-model.evaluate(xtest_numeric,ytest)
+model_cnn.evaluate(xtest_numeric,ytest)
 ```
-
-As stated earlier, when ```num_epochs``` is large (above 200), the testing accuracy averages at $84$%.  From previous results, accuracy increases as ```num_epochs``` increases.  
