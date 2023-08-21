@@ -11,6 +11,9 @@ PBSIM2 (Pac-Bio Simulator 2.0)
 PBSIM3 (Pac-Bio Simulator 3.0)
 - [GitHub Link](https://github.com/yukiteruono/pbsim3)
 - [Reference Paper](https://academic.oup.com/nargab/article/4/4/lqac092/6855700)
+- [Additional Reference](https://github.com/PacificBiosciences/ccs)
+- Note here that the output of PBSIM needs to be passed to PBCCS to generated the HiFi reads.
+- [PBCCS GitHub and Documentation](https://github.com/PacificBiosciences/ccs)
 
 PaSS (Pac-Bio Sequencing Simulator)
 - [Reference Paper](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2901-7)
