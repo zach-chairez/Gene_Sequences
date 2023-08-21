@@ -1,1 +1,14 @@
+- Here's a list of reference papers I parsed and skimmed through.  
+- The list of papers found under ```Read Simulators Info.md``` are not listed here.
 
+- [DNA Seqeunce Classification via Deep Learning and Natural Language Processing](https://www.nature.com/articles/s41598-020-80430-x)
+- [Analyzing DNA Sequence Classification using CNN's and Hybrid Models](https://www.hindawi.com/journals/cmmm/2021/1835056/)
+- [Using RNN's for Detecting DNA modifications on Nanopore Sequence Data](https://www.nature.com/articles/s41467-019-10168-2)
+- [Learning the Language of the Genome using RNN's](https://cs224d.stanford.edu/reports/jessesz.pdf)
+- [RNN's for SARS-CoV-2 Classification](https://www.aimspress.com/article/doi/10.3934/mbe.2021440?viewType=HTML)
+- [BERT](https://arxiv.org/abs/1810.04805)
+- [DNABERT](https://academic.oup.com/bioinformatics/article/37/15/2112/6128680)
+- [DNABERT2](https://arxiv.org/abs/2306.15006)
+- [FastText Reference 1](https://arxiv.org/abs/1607.04606)
+- [FastText Reference 2](https://arxiv.org/abs/1607.01759)
+- [FastText Reference 3](https://arxiv.org/abs/1612.03651)
