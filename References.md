@@ -6,6 +6,7 @@
 - [Using RNN's for Detecting DNA modifications on Nanopore Sequence Data](https://www.nature.com/articles/s41467-019-10168-2)
 - [Learning the Language of the Genome using RNN's](https://cs224d.stanford.edu/reports/jessesz.pdf)
 - [RNN's for SARS-CoV-2 Classification](https://www.aimspress.com/article/doi/10.3934/mbe.2021440?viewType=HTML)
+- [Models for Read Lengths](https://arxiv.org/abs/1104.3889)
 - [BERT](https://arxiv.org/abs/1810.04805)
 - [DNABERT](https://academic.oup.com/bioinformatics/article/37/15/2112/6128680)
 - [DNABERT2](https://arxiv.org/abs/2306.15006)
